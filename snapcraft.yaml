@@ -1,0 +1,49 @@
+name: freeplane-mindmapping
+version: 1
+version-script: ls freeplane*.zip|sed 's/.*-\([^-]\+\).zip/\1/'|tr -s '_' '-'
+summary: Application for Mind Mapping, Knowledge and Project Management
+description: |
+  Application for Mind Mapping, Knowledge Management, Project Management.
+  Develop, organize and communicate your ideas and knowledge in the most
+  effective way.
+
+  Features
+  - Mind Mapping
+  - Knowledge Management
+  - Project Management
+  - Presentation
+  - Outline
+  - Writing
+
+  Homepage: https://www.freeplane.org
+
+confinement: strict
+grade: stable
+icon: data/gui/freeplane.png
+
+apps:
+  freeplane-mindmapping:
+    command: desktop-launch $SNAP/freeplane/freeplane.sh
+    plugs: 
+      - cups-control
+      - desktop
+      - desktop-legacy
+      - home
+      - network
+      - x11
+    environment:
+      _JAVA_OPTIONS: -Duser.home=$SNAP_USER_DATA 
+
+parts:
+  freeplane-mindmapping:
+    after: [desktop-gtk2]
+    plugin: jdk
+    source: .
+    override-build: |
+      mkdir -p  $SNAPCRAFT_PART_INSTALL/meta/gui
+      unzip freeplane*.zip -d $SNAPCRAFT_PART_INSTALL/
+      mv $SNAPCRAFT_PART_INSTALL/freeplane-* $SNAPCRAFT_PART_INSTALL/freeplane
+      chmod +x $SNAPCRAFT_PART_INSTALL/freeplane/freeplane.sh
+      cp ./data/gui/* $SNAPCRAFT_PART_INSTALL/meta/gui/
+    build-packages:
+      - unzip

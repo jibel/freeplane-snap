@@ -1,5 +1,6 @@
+base: core18
 name: freeplane-mindmapping
-version: 1
+version: "1"
 version-script: ls freeplane*.zip|sed 's/.*-\([^-]\+\).zip/\1/'|tr -s '_' '-'
 summary: Application for Mind Mapping, Knowledge and Project Management
 description: |
@@ -35,9 +36,30 @@ apps:
       _JAVA_OPTIONS: -Duser.home=$SNAP_USER_DATA 
 
 parts:
+  desktop-gtk2:
+    source: https://github.com/ubuntu/snapcraft-desktop-helpers.git
+    source-subdir: gtk
+    plugin: make
+    build-packages:
+      - libglib2.0-dev
+    stage-packages:
+      - libglib2.0-bin
+
+  jdk:
+    plugin: nil
+    stage-packages:
+        -  default-jdk
+    filesets:
+        jdk-bits: [-usr/lib/jvm/default-java/bin,
+                   -usr/lib/jvm/default-java/include,
+                   -usr/lib/jvm/default-java/lib, 
+                   -usr/share/doc]
+    stage:
+        - $jdk-bits
+
   freeplane-mindmapping:
-    after: [desktop-gtk2]
-    plugin: jdk
+    after: [desktop-gtk2, jdk]
+    plugin: nil
     source: .
     override-build: |
       mkdir -p  $SNAPCRAFT_PART_INSTALL/meta/gui

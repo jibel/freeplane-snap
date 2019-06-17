@@ -34,6 +34,8 @@ apps:
       - x11
     environment:
       _JAVA_OPTIONS: -Duser.home=$SNAP_USER_DATA 
+      JAVA_HOME: $SNAP/usr/lib/jvm/default-java
+      PATH: $SNAP/usr/lib/jvm/default-java/bin:$SNAP/usr/lib/jvm/default-java/jre/bin:$PATH
 
 parts:
   desktop-gtk2:
@@ -48,7 +50,7 @@ parts:
   jdk:
     plugin: nil
     stage-packages:
-        -  default-jdk
+        -  default-jre
     filesets:
         jdk-bits: [-usr/lib/jvm/default-java/bin,
                    -usr/lib/jvm/default-java/include,
@@ -69,3 +71,4 @@ parts:
       cp ./data/gui/* $SNAPCRAFT_PART_INSTALL/meta/gui/
     build-packages:
       - unzip
+      - default-jre

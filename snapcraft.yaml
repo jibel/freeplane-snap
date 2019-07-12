@@ -38,9 +38,9 @@ apps:
       PATH: $SNAP/usr/lib/jvm/default-java/bin:$SNAP/usr/lib/jvm/default-java/jre/bin:$PATH
 
 parts:
-  desktop-gtk2:
+  desktop-glib:
     source: https://github.com/ubuntu/snapcraft-desktop-helpers.git
-    source-subdir: gtk
+    source-subdir: glib-only
     plugin: make
     build-packages:
       - libglib2.0-dev
@@ -60,7 +60,7 @@ parts:
         - $jdk-bits
 
   freeplane-mindmapping:
-    after: [desktop-gtk2, jdk]
+    after: [desktop-glib, jdk]
     plugin: nil
     source: .
     override-build: |

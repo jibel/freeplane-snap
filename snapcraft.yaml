@@ -1,7 +1,5 @@
-base: core18
+base: core20
 name: freeplane-mindmapping
-version: "1"
-version-script: ls freeplane*.zip|sed 's/.*-\([^-]\+\).zip/\1/'|tr -s '_' '-'
 summary: Application for Mind Mapping, Knowledge and Project Management
 description: |
   Application for Mind Mapping, Knowledge Management, Project Management.
@@ -21,10 +19,11 @@ description: |
 confinement: strict
 grade: stable
 icon: data/gui/freeplane.png
+adopt-info: freeplane-mindmapping
 
 apps:
   freeplane-mindmapping:
-    command: desktop-launch $SNAP/freeplane/freeplane.sh
+    command: bin/desktop-launch $SNAP/freeplane/freeplane.sh
     plugs: 
       - cups-control
       - desktop
@@ -65,7 +64,8 @@ parts:
     filesets:
         jdk-bits: [-usr/lib/jvm/default-java/bin,
                    -usr/lib/jvm/default-java/include,
-                   -usr/lib/jvm/default-java/lib, 
+                   -usr/lib/jvm/default-java/lib,
+                   -usr/lib/jvm/java-11-openjdk-amd64/lib/security/blacklisted.certs,
                    -usr/share/doc]
     stage:
         - $jdk-bits
@@ -80,6 +80,7 @@ parts:
       mv $SNAPCRAFT_PART_INSTALL/freeplane-* $SNAPCRAFT_PART_INSTALL/freeplane
       chmod +x $SNAPCRAFT_PART_INSTALL/freeplane/freeplane.sh
       cp ./data/gui/* $SNAPCRAFT_PART_INSTALL/meta/gui/
+      snapcraftctl set-version $(ls freeplane*.zip|sed 's/.*-\([^-]\+\).zip/\1/'|tr -s '_' '-')
     build-packages:
       - unzip
       - default-jre

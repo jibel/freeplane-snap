@@ -68,8 +68,20 @@ parts:
       mv $SNAPCRAFT_PART_INSTALL/freeplane-* $SNAPCRAFT_PART_INSTALL/freeplane
       chmod +x $SNAPCRAFT_PART_INSTALL/freeplane/freeplane.sh
       cp ./data/gui/* $SNAPCRAFT_PART_INSTALL/meta/gui/
+
+      # cacerts is created by a post-install script of ca-certificates-java
+      # but /etc/ is shadowed in the snap, so we need to copy it manually.
+      cd $SNAPCRAFT_PART_INSTALL/usr/lib/jvm/java-17-openjdk-amd64/lib/security/
+      rm -f cacerts
+      # ln -s ../../../../../../etc/ssl/certs/java/cacerts
+      cp ../../../../../../etc/ssl/certs/java/cacerts .
+      cd -
+
       craftctl set version=$(ls freeplane*.zip|sed 's/.*-\([^-]\+\).zip/\1/'|tr -s '_' '-')
     build-packages:
       - unzip
+      - ca-certificates-java
+      - openjdk-17-jre
     stage-packages:
+      - ca-certificates-java
       - openjdk-17-jre

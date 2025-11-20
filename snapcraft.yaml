@@ -1,4 +1,4 @@
-base: core20
+base: core24
 name: freeplane-mindmapping
 summary: Application for Mind Mapping, Knowledge and Project Management
 description: |
@@ -33,8 +33,9 @@ apps:
       - x11
     environment:
       _JAVA_OPTIONS: -Duser.home=$SNAP_USER_DATA 
-      JAVA_HOME: $SNAP/usr/lib/jvm/default-java
-      PATH: $SNAP/usr/lib/jvm/default-java/bin:$SNAP/usr/lib/jvm/default-java/jre/bin:$PATH
+      JAVA_HOME: $SNAP/usr/lib/jvm/java-17-openjdk-amd64
+      FREEPLANE_JAVA_HOME: $SNAP/usr/lib/jvm/java-17-openjdk-amd64
+      PATH: $SNAP/usr/lib/jvm/java-17-openjdk-amd64/bin:$SNAP/usr/lib/jvm/java-17-openjdk-amd64/jre/bin:$PATH
 
 parts:
   desktop-glib:
@@ -46,7 +47,7 @@ parts:
     stage-packages:
       - adwaita-icon-theme
       - dmz-cursor-theme
-      - gnome-themes-standard
+      - gnome-themes-ubuntu
       - libgdk-pixbuf2.0-0
       - libglib2.0-bin
       - libgtk2.0-0
@@ -54,24 +55,11 @@ parts:
       - light-themes
       - locales-all
       - shared-mime-info
-      - ttf-ubuntu-font-family
+      - fonts-ubuntu
       - xdg-user-dirs
 
-  jdk:
-    plugin: nil
-    stage-packages:
-        -  default-jre
-    filesets:
-        jdk-bits: [-usr/lib/jvm/default-java/bin,
-                   -usr/lib/jvm/default-java/include,
-                   -usr/lib/jvm/default-java/lib,
-                   -usr/lib/jvm/java-11-openjdk-amd64/lib/security/blacklisted.certs,
-                   -usr/share/doc]
-    stage:
-        - $jdk-bits
-
   freeplane-mindmapping:
-    after: [desktop-glib, jdk]
+    after: [desktop-glib]
     plugin: nil
     source: .
     override-build: |
@@ -80,7 +68,8 @@ parts:
       mv $SNAPCRAFT_PART_INSTALL/freeplane-* $SNAPCRAFT_PART_INSTALL/freeplane
       chmod +x $SNAPCRAFT_PART_INSTALL/freeplane/freeplane.sh
       cp ./data/gui/* $SNAPCRAFT_PART_INSTALL/meta/gui/
-      snapcraftctl set-version $(ls freeplane*.zip|sed 's/.*-\([^-]\+\).zip/\1/'|tr -s '_' '-')
+      craftctl set version=$(ls freeplane*.zip|sed 's/.*-\([^-]\+\).zip/\1/'|tr -s '_' '-')
     build-packages:
       - unzip
-      - default-jre
+    stage-packages:
+      - openjdk-17-jre
